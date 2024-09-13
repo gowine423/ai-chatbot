@@ -5,6 +5,21 @@
         return; // Exit the script if API key is missing
     }
 
+    // Default settings
+    const defaultSettings = {
+        apiKey: "",
+        title: "Chat with Pulze AI",
+        primaryColor: "#4a90e2",
+        secondaryColor: "#e1f5fe",
+        fontFamily: "Arial, sans-serif",
+        botAvatar: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>',
+        placeholderText: "Type your message...",
+        sendButtonText: "Send"
+    };
+
+    // Merge default settings with user-provided settings
+    const settings = { ...defaultSettings, ...window.chatbotSettings };
+
     const API_KEY = window.chatbotSettings.apiKey;
 
     let openAIConfig = {
@@ -27,7 +42,7 @@
             display: none;
             flex-direction: column;
             overflow: hidden;
-            font-family: Arial, sans-serif;
+            font-family: ${settings.fontFamily};
             resize: both;
             min-width: 200px;
             min-height: 300px;
@@ -41,10 +56,10 @@
             width: 15px;
             height: 15px;
             cursor: se-resize;
-            background: linear-gradient(135deg, transparent 50%, #4a90e2 50%);
+            background: linear-gradient(135deg, transparent 50%, ${settings.primaryColor} 50%);
         }
         #chatbot-header {
-            background-color: #4a90e2;
+            background-color: ${settings.primaryColor};
             color: white;
             padding: 10px;
             font-weight: bold;
@@ -68,7 +83,7 @@
             border-radius: 3px;
         }
         #chatbot-send {
-            background-color: #4a90e2;
+            background-color: ${settings.primaryColor};
             color: white;
             border: none;
             padding: 5px 10px;
@@ -83,7 +98,7 @@
             border-top: 1px solid #e0e0e0;
         }
         #chatbot-footer a {
-            color: #4a90e2;
+            color: ${settings.primaryColor};
             text-decoration: none;
         }
         #chatbot-footer a:hover {
@@ -95,7 +110,7 @@
             right: 20px;
             width: 60px;
             height: 60px;
-            background-color: #4a90e2;
+            background-color: ${settings.primaryColor};
             border-radius: 50%;
             display: flex;
             justify-content: center;
@@ -116,7 +131,7 @@
             position: relative;
         }
         .user-message .message-content {
-            background-color: #e1f5fe;
+            background-color: ${settings.secondaryColor};
             margin-left: auto;
         }
         .bot-message .message-content {
@@ -126,7 +141,7 @@
             width: 24px;
             height: 24px;
             border-radius: 50%;
-            background-color: black;
+            background-color: ${settings.primaryColor};
             display: flex;
             justify-content: center;
             align-items: center;
@@ -194,7 +209,7 @@
 
     const chatHeader = document.createElement("div");
     chatHeader.id = "chatbot-header";
-    chatHeader.textContent = "Chat with Pulze AI";
+    chatHeader.textContent = settings.title;
 
     const chatMessages = document.createElement("div");
     chatMessages.id = "chatbot-messages";
@@ -205,18 +220,25 @@
     const input = document.createElement("input");
     input.id = "chatbot-input";
     input.type = "text";
-    input.placeholder = "Type your message...";
+    input.placeholder = settings.placeholderText;
 
     const sendButton = document.createElement("button");
     sendButton.id = "chatbot-send";
-    sendButton.textContent = "Send";
+    sendButton.textContent = settings.sendButtonText;
 
     inputArea.appendChild(input);
     inputArea.appendChild(sendButton);
 
     const chatFooter = document.createElement("div");
     chatFooter.id = "chatbot-footer";
-    chatFooter.innerHTML = 'Powered by <a href="https://spaces.pulze.ai" target="_blank">Spaces</a> from <a href="https://pulze.ai" target="_blank">Pulze.ai</a>';
+
+    if (settings.showPoweredBy) {
+        chatFooter.innerHTML = 'Powered by <a href="https://spaces.pulze.ai/s?utm_source=Chatbot" target="_blank">Spaces</a> from <a href="https://pulze.ai" target="_blank">Pulze.ai</a>';
+    } else if (settings.footerText) {
+        chatFooter.innerHTML = settings.footerText;
+    } else {
+        chatFooter.style.display = 'none'; // Hide footer if no text is provided
+    }
 
     chatContainer.appendChild(chatHeader);
     chatContainer.appendChild(chatMessages);
@@ -231,8 +253,10 @@
     document.body.appendChild(chatContainer);
     document.body.appendChild(toggleButton);
 
+    // Toggle Button Click Event
     toggleButton.onclick = function () {
-        if (chatContainer.style.display === "none") {
+        const chatContainerDisplay = window.getComputedStyle(chatContainer).display;
+        if (chatContainerDisplay === "none") {
             chatContainer.style.display = "flex";
             toggleButton.style.display = "none";
         } else {
@@ -241,6 +265,7 @@
         }
     };
 
+    // Chat Header Click Event
     chatHeader.onclick = function () {
         chatContainer.style.display = "none";
         toggleButton.style.display = "flex";
@@ -315,8 +340,7 @@
         if (sender === "bot") {
             const logoElement = document.createElement("div");
             logoElement.className = "bot-logo";
-            logoElement.innerHTML =
-                '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>';
+            logoElement.innerHTML = settings.botAvatar;
             messageElement.appendChild(logoElement);
         }
 

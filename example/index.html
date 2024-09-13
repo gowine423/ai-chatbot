@@ -12,11 +12,23 @@
     <!-- Chatbot settings -->
     <script>
         window.chatbotSettings = {
-            apiKey: "sk-123456", // Go to your space Enhanced AI Integration settings to generate your embedding and access token
+            apiKey: "sk-123456", // Replace with your actual API key
+            title: "Ask Our AI Assistant",
+            primaryColor: "#FF6523", // A nice international orange type of color!
+            secondaryColor: "#ecf0f1", // Light gray for user messages
+            fontFamily: "'Roboto', sans-serif",
+            botAvatar: '<img src="https://cdn.prod.website-files.com/667253a488705bf38f32d9bc/667571f085708b8999394a19_6622eed31f26e2138b6a84b4_favicon.png" width="24" height="24" alt="Bot">', // Custom avatar image
+            placeholderText: "Ask me anything...",
+            sendButtonText: "➤", // An arrow symbol for the send button
+            footerText: 'Powered by <a href="https://example.com" target="_blank">My Company</a>', // Custom footer text
+            showPoweredBy: false // Set to true if you want to keep the default "Powered by Spaces from Pulze.ai"
         };
     </script>
 
+    <!-- Google Fonts for the custom font (optional) -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+
     <!-- Chatbot script -->
-    <script src="chatbot.js"></script>
+    <script src="../dist/chatbot.js"></script>
 </body>
 </html>
